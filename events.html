@@ -6,59 +6,115 @@
   <title>الفعاليات | رائدات مصر</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@700&family=IBM+Plex+Sans+Arabic&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <script src="https://unpkg.com/scrollreveal"></script>
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     :root {
-      --black: #1f2937;
-      --white: #fff;
       --yellow: #facc15;
-      --gray: #f3f4f6;
+      --red: #b91c1c;
+      --black: #111;
+      --white: #fff;
+      --gray-bg: #f9f9f9;
+      --gray-dark: #6b7280;
+      --text: #374151;
+      --hover-dark: #111827;
     }
 
-    body {
-      font-family: 'IBM Plex Sans Arabic', sans-serif;
-      background: #f9fafb;
+    html, body {
       margin: 0;
       padding: 0;
+      max-width: 100vw;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      background-color: var(--gray-bg);
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
       color: var(--black);
     }
 
-    header {
-      background: var(--black);
-      padding: 1rem 2rem;
+    .header {
+      background-color: var(--black);
+      color: var(--white);
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0.5rem 1.5rem;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+      gap: 1rem;
     }
 
     .logo-img {
-      height: 50px;
+      height: auto;
+      max-height: 50px;
+      width: auto;
+      display: block;
     }
 
     .nav-list {
-      list-style: none;
       display: flex;
-      gap: 1.5rem;
-      padding: 0;
+      list-style: none;
+      gap: 1.2rem;
       margin: 0;
+      padding: 0;
     }
 
-    .nav-list a {
+    .nav-list li a {
       color: var(--white);
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
+      transition: color 0.3s ease;
     }
 
+    .nav-list li a:hover,
     .active-link {
       color: var(--yellow);
     }
 
-    .events-grid {
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translateY(8px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translateY(-8px); }
+
+    @media (max-width: 768px) {
+      .nav-list {
+        display: none;
+        flex-direction: column;
+        background: var(--black);
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 200px;
+        padding: 1rem;
+      }
+      .nav-list.active { display: flex; }
+      .hamburger { display: flex; }
+    }
+
+    main {
       max-width: 1100px;
       margin: auto;
-      padding: 3rem 1.5rem;
+      padding: 6rem 1.5rem 2rem;
+    }
+
+    .events-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 2rem;
@@ -72,9 +128,7 @@
       transition: transform 0.3s ease;
     }
 
-    .event-card:hover {
-      transform: translateY(-5px);
-    }
+    .event-card:hover { transform: translateY(-5px); }
 
     .event-image {
       width: 100%;
@@ -85,13 +139,11 @@
     .event-content {
       padding: 1rem 1.2rem;
     }
-
     .event-content h3 {
       margin: 0;
       font-size: 1.2rem;
       font-family: 'Noto Kufi Arabic', sans-serif;
     }
-
     .event-content p {
       font-size: 0.95rem;
       color: #444;
@@ -102,8 +154,8 @@
 </head>
 <body>
 
-  <header>
-    <a href="index.html"><img src="assets/logo.png" class="logo-img" alt="رائدات مصر" /></a>
+  <header class="header">
+    <a href="index.html"><img src="لوجو رائدات مصر).png" class="logo-img" alt="رائدات مصر" /></a>
     <nav>
       <ul class="nav-list">
         <li><a href="about.html">عن المبادرة</a></li>
@@ -113,6 +165,11 @@
         <li><a href="join.html">انضم إلينا</a></li>
       </ul>
     </nav>
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </header>
 
   <main class="events-grid">
@@ -148,6 +205,13 @@
       easing: 'ease-in-out',
       origin: 'bottom',
       interval: 150
+    });
+
+    const hamburger = document.getElementById('hamburger');
+    const navList = document.querySelector('.nav-list');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navList.classList.toggle('active');
     });
   </script>
 
