@@ -3,316 +3,219 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مقالات | رائدات مصر</title>
+  <title>المقالات | رائدات مصر</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@700&family=IBM+Plex+Sans+Arabic&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://unpkg.com/scrollreveal"></script>
+
   <style>
     :root {
-      --black: #111;
+      --black: #1f2937;
       --white: #fff;
-      --red: #b91c1c;
       --yellow: #facc15;
-      --gray: #e5e7eb;
+      --red: #dc2626;
+      --gray: #f3f4f6;
     }
+
     body {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f9fafb;
+      background: #f9fafb;
       color: var(--black);
-      scroll-behavior: smooth;
     }
+
     header {
       background: var(--black);
-      color: var(--white);
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    header h1 {
+
+    .logo-img {
+      height: 50px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      padding: 0;
       margin: 0;
-      font-size: 1.8rem;
-      font-family: 'Noto Kufi Arabic', sans-serif;
     }
-    .add-btn {
-      background-color: var(--red);
-      color: white;
-      border: none;
-      padding: 0.5rem 1.2rem;
-      border-radius: 6px;
-      cursor: pointer;
+
+    .nav-list a {
+      color: var(--white);
+      text-decoration: none;
       font-weight: bold;
-      font-size: 1rem;
     }
-    .container {
-      padding: 2rem;
-      max-width: 1200px;
+
+    .active-link {
+      color: var(--yellow);
+    }
+
+    .achievements-grid {
+      max-width: 1100px;
       margin: auto;
+      padding: 3rem 1.5rem;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 2rem;
     }
+
     .article-card {
       background: var(--white);
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
       overflow: hidden;
+      transition: transform 0.3s ease;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease;
+      position: relative;
     }
+
     .article-card:hover {
       transform: translateY(-5px);
     }
-    .article-card img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-    }
-    .article-card .content {
+
+    .article-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 0.5rem;
       padding: 1rem;
     }
-    .article-card h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1.2rem;
-      font-family: 'Noto Kufi Arabic', sans-serif;
-      color: #1f2937;
-    }
-    .article-card p {
-      font-size: 0.95rem;
-      line-height: 1.8;
-      color: #374151;
-    }
-    .modal {
-      position: fixed;
-      top: 0; right: 0; left: 0; bottom: 0;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: var(--white);
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-    .modal-content input,
-    .modal-content textarea {
+
+    .article-gallery img {
       width: 100%;
-      margin-bottom: 1rem;
-      padding: 0.6rem;
-      font-size: 1rem;
-      border: 1px solid var(--gray);
-      border-radius: 6px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
     }
-    .modal-content input[type="file"] {
-      padding: 0.4rem;
+
+    .article-content {
+      padding: 1rem 1.2rem;
     }
-    .modal-content button {
+
+    .article-content h2 {
+      margin: 0 0 0.6rem;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+      font-size: 1.3rem;
+      color: var(--black);
+    }
+
+    .article-content p {
+      font-size: 0.95rem;
+      color: #444;
+      line-height: 1.8;
+    }
+
+    .read-more-btn {
       background: var(--yellow);
-      border: none;
-      padding: 0.6rem 1.2rem;
+      color: #000;
       font-weight: bold;
+      border: none;
+      padding: 0.5rem 1rem;
       border-radius: 6px;
       cursor: pointer;
+      margin-top: 1rem;
+      display: inline-block;
     }
-    .close-btn {
-      float: left;
-      background: var(--red);
-      color: white;
-      padding: 0.4rem 0.8rem;
-      font-weight: bold;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
+
+    .full-article {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.6s ease;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #333;
     }
-    .read-more-btn,
-    .delete-btn {
-      background: var(--yellow);
-      border: none;
-      padding: 0.4rem 0.8rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-left: 0.5rem;
+
+    .full-article.open {
+      max-height: 1000px;
+      margin-top: 1rem;
     }
-    .delete-btn {
-      background: var(--red);
-      color: white;
+
+    .full-article p {
+      margin-bottom: 1.2rem;
+      text-align: justify;
     }
   </style>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 </head>
 <body>
 
   <header>
-    <h1>المقالات</h1>
-    <button class="add-btn" onclick="showPasswordModal()">➕ أضف مقال</button>
+    <a href="index.html"><img src="لوجو رائدات مصر).png" class="logo-img" alt="رائدات مصر" /></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="about.html">عن المبادرة</a></li>
+        <li><a href="achievements.html">الإنجازات</a></li>
+        <li><a href="articles.html" class="active-link">المقالات</a></li>
+        <li><a href="events.html">الفعاليات</a></li>
+        <li><a href="join.html">انضم إلينا</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <div class="container" id="articlesContainer"></div>
+  <main class="achievements-grid">
 
-  <div class="modal" id="passwordModal">
-    <div class="modal-content">
-      <h3>أدخل كلمة المرور</h3>
-      <input type="password" id="adminPass" placeholder="كلمة السر" />
-      <button onclick="verifyPassword()">تأكيد</button>
+    <!-- مقال 1 -->
+    <div class="article-card fade-in">
+      <div class="article-gallery">
+        <img src="https://via.placeholder.com/300x200?text=صورة1" alt="صورة 1" />
+        <img src="https://via.placeholder.com/300x200?text=صورة2" alt="صورة 2" />
+        <img src="https://via.placeholder.com/300x200?text=صورة3" alt="صورة 3" />
+      </div>
+      <div class="article-content">
+        <h2>دور المرأة في تنمية المجتمع الريفي</h2>
+        <p>تُعد المرأة الريفية جزءًا أساسيًا في النسيج المجتمعي المصري...</p>
+        <div class="full-article">
+          <p>وقد برز دورها في الزراعة والصناعات المنزلية والمشاريع الصغيرة والمتوسطة بشكل ملحوظ.</p>
+          <p>أثبتت قدرتها على تقديم حلول مبتكرة وتحقيق الاكتفاء الذاتي في العديد من المناطق الريفية.</p>
+          <p>إن تمكين المرأة الريفية يعني دعم التنمية الاقتصادية والاجتماعية في مصر.</p>
+        </div>
+        <button class="read-more-btn" onclick="toggleReadMore(this)">اقرأ المزيد</button>
+      </div>
     </div>
-  </div>
 
-  <div class="modal" id="addModal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeAddModal()">×</button>
-      <h3>إضافة مقال جديد</h3>
-      <input type="text" id="articleTitle" placeholder="عنوان المقال" />
-      <textarea id="articleBody" rows="4" placeholder="نص المقال"></textarea>
-      <input type="file" id="articleImage" accept="image/*" />
-      <button onclick="addArticle()">نشر المقال</button>
+    <!-- مقال 2 -->
+    <div class="article-card fade-in">
+      <div class="article-gallery">
+        <img src="518385514_697326166637408_5379080265638247173_n.jpg" alt="صورة 1" />
+        <img src="518390457_697323726637652_9209821185526858790_n.jpg" alt="صورة 2" />
+        <img src="518416885_697322603304431_7661632087991587555_n.jpg" alt="صورة 3" />
+      </div>
+      <div class="article-content">
+        <h2>رائدات مصر" تحت شعار "هي.. الوعي. الحماية. التنمية"</h2>
+        <p>وزير الشباب والرياضة يطلق المرحلة الأولى من المبادرة الوطنية "رائدات مصر"... </p>
+        <div class="full-article">
+          <p>أطلق د. أشرف صبحي، وزير الشباب والرياضة، المرحلة الأولى من المبادرة الوطنية "رائدات مصر".</p>
+          <p>المبادرة تهدف إلى تعزيز الوعي، الحماية، والتنمية للفتيات من خلال برامج تدريب وتثقيف.</p>
+          <p>تم تنفيذ الحدث بمشاركة مسؤولين، إعلاميين، وممثلين عن المجتمع المدني.</p>
+        </div>
+        <button class="read-more-btn" onclick="toggleReadMore(this)">اقرأ المزيد</button>
+      </div>
     </div>
-  </div>
+
+  </main>
 
   <script>
-    const CORRECT_PASSWORD = "Raedat2025";
-    let isAdmin = false;
-
-    // Firebase configuration and initialization
-    const firebaseConfig = {
-      apiKey: "AIzaSyBLcRUetOhlzENmSgKbiapvniI47oS4ueM",
-      authDomain: "raedatwebsite.firebaseapp.com",
-      projectId: "raedatwebsite",
-      storageBucket: "raedatwebsite.appspot.com",
-      messagingSenderId: "674363790886",
-      appId: "1:674363790886:web:e7ed6625d9438d82c6b8e7",
-      measurementId: "G-0QKTKHFQ7N"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage().ref();
-
-    const passwordModal = document.getElementById("passwordModal");
-    const addModal = document.getElementById("addModal");
-    const articlesContainer = document.getElementById("articlesContainer");
-
-    window.onload = () => loadArticles();
-
-    function showPasswordModal() {
-      passwordModal.classList.add("active");
+    function toggleReadMore(btn) {
+      const content = btn.previousElementSibling;
+      content.classList.toggle('open');
+      btn.textContent = content.classList.contains('open') ? "إخفاء المقال" : "اقرأ المزيد";
     }
 
-    function verifyPassword() {
-      const entered = document.getElementById("adminPass").value;
-      if (entered === CORRECT_PASSWORD) {
-        passwordModal.classList.remove("active");
-        addModal.classList.add("active");
-        isAdmin = true;
-        document.getElementById("adminPass").value = "";
-        loadArticles();
-      } else {
-        alert("كلمة مرور غير صحيحة");
-      }
-    }
-
-    function closeAddModal() {
-      addModal.classList.remove("active");
-    }
-
-    async function addArticle() {
-      const title = document.getElementById("articleTitle").value.trim();
-      const body = document.getElementById("articleBody").value.trim();
-      const imageFile = document.getElementById("articleImage").files[0];
-
-      if (!title || !body || !imageFile) {
-        alert("يرجى ملء جميع الحقول");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const blob = await fetch(e.target.result).then(r => r.blob());
-        const name = `articles/${Date.now()}`;
-        const snap = await storage.child(name).put(blob);
-        const url = await snap.ref.getDownloadURL();
-
-        const doc = await db.collection('articles').add({
-          title, body, image: url,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        addModal.classList.remove("active");
-        loadArticles();
-
-        document.getElementById("articleTitle").value = "";
-        document.getElementById("articleBody").value = "";
-        document.getElementById("articleImage").value = "";
-      };
-      reader.readAsDataURL(imageFile);
-    }
-
-    function loadArticles() {
-      db.collection('articles').orderBy('timestamp','desc')
-        .onSnapshot(snapshot => {
-          articlesContainer.innerHTML = "";
-          snapshot.forEach(doc => {
-            const a = doc.data();
-            a.id = doc.id;
-            renderArticle(a);
-          });
-        });
-    }
-
-    function renderArticle(article) {
-      const card = document.createElement("article");
-      card.className = "article-card";
-
-      const shortBody = article.body.split("\n").slice(0, 2).join("<br>") + "...";
-      const fullBody = article.body.replace(/\n/g, "<br>");
-
-      card.innerHTML = `
-        <img src="${article.image}" alt="صورة المقال" />
-        <div class="content">
-          <h3>${article.title}</h3>
-          <p class="preview">${shortBody}</p>
-          <p class="full" style="display: none">${fullBody}</p>
-          <button class="read-more-btn" onclick="toggleReadMore(this)">قراءة المزيد</button>
-          ${isAdmin ? `<button class="delete-btn" onclick="deleteArticle(this, '${article.id}')">🗑️ حذف</button>` : ""}
-        </div>
-      `;
-
-      articlesContainer.prepend(card);
-    }
-
-    function toggleReadMore(button) {
-      const preview = button.previousElementSibling.previousElementSibling;
-      const full = button.previousElementSibling;
-      if (full.style.display === "none") {
-        preview.style.display = "none";
-        full.style.display = "block";
-        button.textContent = "إخفاء";
-      } else {
-        preview.style.display = "block";
-        full.style.display = "none";
-        button.textContent = "قراءة المزيد";
-      }
-    }
-
-    async function deleteArticle(button, id) {
-      if (!isAdmin) return;
-      if (confirm("هل أنت متأكد من حذف المقال؟")) {
-        await db.collection('articles').doc(id).delete();
-        button.closest('.article-card').remove();
-      }
-    }
+    ScrollReveal().reveal('.fade-in', {
+      distance: '30px',
+      duration: 1000,
+      easing: 'ease-in-out',
+      origin: 'bottom',
+      interval: 200
+    });
   </script>
 
 </body>

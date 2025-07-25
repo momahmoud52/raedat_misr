@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الفعاليات | رائدات مصر</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@700&family=IBM+Plex+Sans+Arabic&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://unpkg.com/scrollreveal"></script>
+
+  <style>
+    :root {
+      --black: #1f2937;
+      --white: #fff;
+      --yellow: #facc15;
+      --gray: #f3f4f6;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 0;
+      color: var(--black);
+    }
+
+    header {
+      background: var(--black);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-img {
+      height: 50px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .nav-list a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .active-link {
+      color: var(--yellow);
+    }
+
+    .events-grid {
+      max-width: 1100px;
+      margin: auto;
+      padding: 3rem 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .event-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .event-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .event-content {
+      padding: 1rem 1.2rem;
+    }
+
+    .event-content h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+    }
+
+    .event-content p {
+      font-size: 0.95rem;
+      color: #444;
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html"><img src="assets/logo.png" class="logo-img" alt="رائدات مصر" /></a>
+    <nav>
+      <ul class="nav-list">
+        <li><a href="about.html">عن المبادرة</a></li>
+        <li><a href="achievements.html">الإنجازات</a></li>
+        <li><a href="articles.html">المقالات</a></li>
+        <li><a href="events.html" class="active-link">الفعاليات</a></li>
+        <li><a href="join.html">انضم إلينا</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="events-grid">
+    <div class="event-card fade-in">
+      <img src="https://via.placeholder.com/600x400?text=فعالية+1" class="event-image" alt="صورة فعالية" />
+      <div class="event-content">
+        <h3>ورشة تمكين الفتيات</h3>
+        <p>ورشة تدريبية تستهدف تعليم المهارات الرقمية للفتيات في صعيد مصر بالتعاون مع جمعيات تنموية.</p>
+      </div>
+    </div>
+
+    <div class="event-card fade-in">
+      <img src="https://via.placeholder.com/600x400?text=فعالية+2" class="event-image" alt="صورة فعالية" />
+      <div class="event-content">
+        <h3>منتدى الفتاة الريفية</h3>
+        <p>مؤتمر وطني يستعرض قصص نجاح ومشروعات الفتيات في القرى ويمنح فرص التشبيك مع داعمين.</p>
+      </div>
+    </div>
+
+    <div class="event-card fade-in">
+      <img src="https://via.placeholder.com/600x400?text=فعالية+3" class="event-image" alt="صورة فعالية" />
+      <div class="event-content">
+        <h3>حملة توعية صحية</h3>
+        <p>تنظيم قوافل ميدانية للتوعية بصحة الفتيات وأهمية الكشف المبكر عن الأمراض.</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    ScrollReveal().reveal('.fade-in', {
+      distance: '30px',
+      duration: 1000,
+      easing: 'ease-in-out',
+      origin: 'bottom',
+      interval: 150
+    });
+  </script>
+
+</body>
+</html>
