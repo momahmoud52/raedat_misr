@@ -12,7 +12,6 @@
       --yellow: #facc15;
       --gray: #e5e7eb;
     }
-
     body {
       font-family: 'IBM Plex Sans Arabic', sans-serif;
       margin: 0;
@@ -21,7 +20,6 @@
       color: var(--black);
       scroll-behavior: smooth;
     }
-
     header {
       background: var(--black);
       color: var(--white);
@@ -31,13 +29,11 @@
       align-items: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
     header h1 {
       margin: 0;
       font-size: 1.8rem;
       font-family: 'Noto Kufi Arabic', sans-serif;
     }
-
     .add-btn {
       background-color: var(--red);
       color: white;
@@ -48,7 +44,6 @@
       font-weight: bold;
       font-size: 1rem;
     }
-
     .container {
       padding: 2rem;
       max-width: 1200px;
@@ -57,7 +52,6 @@
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
     }
-
     .article-card {
       background: var(--white);
       border-radius: 12px;
@@ -67,34 +61,28 @@
       flex-direction: column;
       transition: transform 0.3s ease;
     }
-
     .article-card:hover {
       transform: translateY(-5px);
     }
-
     .article-card img {
       width: 100%;
       height: 240px;
       object-fit: cover;
     }
-
     .article-card .content {
       padding: 1rem;
     }
-
     .article-card h3 {
       margin: 0 0 0.5rem;
       font-size: 1.2rem;
       font-family: 'Noto Kufi Arabic', sans-serif;
       color: #1f2937;
     }
-
     .article-card p {
       font-size: 0.95rem;
       line-height: 1.8;
       color: #374151;
     }
-
     .modal {
       position: fixed;
       top: 0; right: 0; left: 0; bottom: 0;
@@ -104,11 +92,9 @@
       align-items: center;
       z-index: 999;
     }
-
     .modal.active {
       display: flex;
     }
-
     .modal-content {
       background: var(--white);
       padding: 2rem;
@@ -117,7 +103,6 @@
       width: 90%;
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }
-
     .modal-content input,
     .modal-content textarea {
       width: 100%;
@@ -127,11 +112,9 @@
       border: 1px solid var(--gray);
       border-radius: 6px;
     }
-
     .modal-content input[type="file"] {
       padding: 0.4rem;
     }
-
     .modal-content button {
       background: var(--yellow);
       border: none;
@@ -140,7 +123,6 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
     .close-btn {
       float: left;
       background: var(--red);
@@ -151,7 +133,6 @@
       border: none;
       cursor: pointer;
     }
-
     .read-more-btn,
     .delete-btn {
       background: var(--yellow);
@@ -162,12 +143,16 @@
       cursor: pointer;
       margin-left: 0.5rem;
     }
-
     .delete-btn {
       background: var(--red);
       color: white;
     }
   </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 </head>
 <body>
 
@@ -201,12 +186,25 @@
     const CORRECT_PASSWORD = "Raedat2025";
     let isAdmin = false;
 
+    // Firebase configuration and initialization
+    const firebaseConfig = {
+      apiKey: "AIzaSyBLcRUetOhlzENmSgKbiapvniI47oS4ueM",
+      authDomain: "raedatwebsite.firebaseapp.com",
+      projectId: "raedatwebsite",
+      storageBucket: "raedatwebsite.appspot.com",
+      messagingSenderId: "674363790886",
+      appId: "1:674363790886:web:e7ed6625d9438d82c6b8e7",
+      measurementId: "G-0QKTKHFQ7N"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const storage = firebase.storage().ref();
+
     const passwordModal = document.getElementById("passwordModal");
     const addModal = document.getElementById("addModal");
     const articlesContainer = document.getElementById("articlesContainer");
-    let db;
 
-    window.onload = () => openDB();
+    window.onload = () => loadArticles();
 
     function showPasswordModal() {
       passwordModal.classList.add("active");
@@ -219,7 +217,7 @@
         addModal.classList.add("active");
         isAdmin = true;
         document.getElementById("adminPass").value = "";
-        refreshArticles(); // reload to show delete buttons
+        loadArticles();
       } else {
         alert("كلمة مرور غير صحيحة");
       }
@@ -229,22 +227,7 @@
       addModal.classList.remove("active");
     }
 
-    function openDB() {
-      const request = indexedDB.open("RaedatDB", 1);
-      request.onerror = () => alert("فشل فتح قاعدة البيانات");
-      request.onsuccess = () => {
-        db = request.result;
-        loadArticles();
-      };
-      request.onupgradeneeded = (e) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains("articles")) {
-          db.createObjectStore("articles", { keyPath: "id", autoIncrement: true });
-        }
-      };
-    }
-
-    function addArticle() {
+    async function addArticle() {
       const title = document.getElementById("articleTitle").value.trim();
       const body = document.getElementById("articleBody").value.trim();
       const imageFile = document.getElementById("articleImage").files[0];
@@ -255,41 +238,37 @@
       }
 
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const newArticle = { title, body, image: e.target.result };
-        const tx = db.transaction("articles", "readwrite");
-        const store = tx.objectStore("articles");
-        const request = store.add(newArticle);
+      reader.onload = async (e) => {
+        const blob = await fetch(e.target.result).then(r => r.blob());
+        const name = `articles/${Date.now()}`;
+        const snap = await storage.child(name).put(blob);
+        const url = await snap.ref.getDownloadURL();
 
-        request.onsuccess = (e) => {
-          newArticle.id = e.target.result;
-          renderArticle(newArticle);
-          closeAddModal();
-          document.getElementById("articleTitle").value = "";
-          document.getElementById("articleBody").value = "";
-          document.getElementById("articleImage").value = "";
-        };
+        const doc = await db.collection('articles').add({
+          title, body, image: url,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-        request.onerror = () => alert("فشل إضافة المقال");
+        addModal.classList.remove("active");
+        loadArticles();
+
+        document.getElementById("articleTitle").value = "";
+        document.getElementById("articleBody").value = "";
+        document.getElementById("articleImage").value = "";
       };
       reader.readAsDataURL(imageFile);
     }
 
     function loadArticles() {
-      const tx = db.transaction("articles", "readonly");
-      const store = tx.objectStore("articles");
-      articlesContainer.innerHTML = "";
-      store.openCursor().onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) {
-          renderArticle(cursor.value);
-          cursor.continue();
-        }
-      };
-    }
-
-    function refreshArticles() {
-      loadArticles(); // إعادة تحميل المقالات لتحديث حالة isAdmin
+      db.collection('articles').orderBy('timestamp','desc')
+        .onSnapshot(snapshot => {
+          articlesContainer.innerHTML = "";
+          snapshot.forEach(doc => {
+            const a = doc.data();
+            a.id = doc.id;
+            renderArticle(a);
+          });
+        });
     }
 
     function renderArticle(article) {
@@ -306,7 +285,7 @@
           <p class="preview">${shortBody}</p>
           <p class="full" style="display: none">${fullBody}</p>
           <button class="read-more-btn" onclick="toggleReadMore(this)">قراءة المزيد</button>
-          ${isAdmin ? `<button class="delete-btn" onclick="deleteArticle(this, ${article.id})">🗑️ حذف</button>` : ""}
+          ${isAdmin ? `<button class="delete-btn" onclick="deleteArticle(this, '${article.id}')">🗑️ حذف</button>` : ""}
         </div>
       `;
 
@@ -327,14 +306,11 @@
       }
     }
 
-    function deleteArticle(button, id) {
+    async function deleteArticle(button, id) {
+      if (!isAdmin) return;
       if (confirm("هل أنت متأكد من حذف المقال؟")) {
-        const tx = db.transaction("articles", "readwrite");
-        const store = tx.objectStore("articles");
-        store.delete(id);
-        tx.onsuccess = () => {
-          button.closest(".article-card").remove();
-        };
+        await db.collection('articles').doc(id).delete();
+        button.closest('.article-card').remove();
       }
     }
   </script>
