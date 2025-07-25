@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>رائدات مصر</title>
+
+  <!-- خطوط Google -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Noto+Kufi+Arabic:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- رأس الموقع -->
+  <header class="header">
+    <a href="index.html" class="logo">
+      <img src="لوجو رائدات مصر).png" alt="رائدات مصر" class="logo-img">
+    </a>
+    <nav class="nav">
+      <ul class="nav-list" id="navList">
+        <li><a href="about.html">عن المبادرة</a></li>
+        <li><a href="achievements.html">الإنجازات</a></li>
+        <li><a href="articles.html">المقالات</a></li>
+        <li><a href="events.html">الفعاليات</a></li>
+        <li><a href="join.html" class="join-btn">انضم إلينا</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" onclick="toggleMenu(this)">
+        <span></span><span></span><span></span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- القسم الرئيسي -->
+  <section class="hero fade-in">
+    <h1>المبادرة الوطنية لرائدات مصر</h1>
+    <p>تمكين المرأة المصرية في الريادة والقيادة وصناعة التأثير.</p>
+  </section>
+
+  <!-- القسم التالي بعد التمرير -->
+  <section class="scroll-target">
+    <h2>أهلاً بك في رائدات مصر</h2>
+    <p>استعرض أقسام الموقع عبر القائمة العلوية.</p>
+  </section>
+
+  <!-- جافا سكريبت -->
+  <script>
+    function toggleMenu(btn) {
+      btn.classList.toggle("active");
+      document.getElementById("navList").classList.toggle("active");
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.querySelector('.scroll-target').scrollIntoView({ behavior: 'smooth' });
+      }, 1500);
+    });
+  </script>
+
+</body>
+</html>

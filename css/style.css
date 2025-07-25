@@ -1,0 +1,352 @@
+/* ========== الأساسيات ========== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --yellow: #facc15;
+  --red: #b91c1c;
+  --black: #111;
+  --white: #fff;
+  --gray-bg: #f9f9f9;
+}
+
+/* ========== إعداد الصفحة ========== */
+html, body {
+  margin: 0;
+  padding: 0;
+  max-width: 100vw;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  background-color: var(--gray-bg);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  color: var(--black);
+}
+
+/* ========== رأس الموقع ========== */
+.header {
+    background-color: var(--black);
+    color: var(--white);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* يجعل المحتوى يتمركز عموديًا */
+    padding: 0.5rem 1.5rem;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    gap: 1rem;
+  }
+  
+  .logo-img {
+    height: auto;
+    max-height: 50px; /* يمنع تضخم مبالغ فيه للّهيدر */
+    width: auto;
+    display: block;
+  }
+  
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  gap: 1.2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list li a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.nav-list li a:hover,
+.active-link {
+  color: var(--yellow);
+}
+
+.join-btn {
+  background-color: var(--red);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  color: var(--white);
+}
+
+/* ========== زر الهامبرغر ========== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(8px);
+}
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-8px);
+}
+
+/* ========== استجابة للشاشات الصغيرة ========== */
+@media (max-width: 768px) {
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    background: var(--black);
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 200px;
+    padding: 1rem;
+  }
+
+  .nav-list.active {
+    display: flex;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* ========== قسم الترحيب ========== */
+.hero {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--white);
+  color: var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 1rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ========== قسم ما بعد التمرير ========== */
+.scroll-target {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+/* ========== شبكة الصفحة (عن المبادرة) ========== */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  max-width: 800px;
+  padding: 120px 1.5rem 4rem;
+  margin: auto;
+}
+
+/* ========== البطاقات ========== */
+.card {
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  border-radius: 16px;
+  padding: 3rem 2rem 2rem;
+  text-align: center;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-top: 1.2rem;
+  color: var(--black);
+}
+
+.card p,
+.card ul {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #333;
+  margin-top: 1rem;
+}
+
+.card ul {
+  padding-right: 1.5rem;
+  text-align: right;
+  list-style-type: "✔️ ";
+}
+
+.card ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* ========== أيقونات ========== */
+.icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--yellow);
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.icon img {
+  width: 60%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .icon img {
+  transform: scale(1.1) rotate(4deg);
+}
+
+/* ========== أنيميشن عند الظهور ========== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.achievements-grid {
+    padding: 120px 1.5rem 4rem;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+  
+  .achievement-card {
+    background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+    border-radius: 18px;
+    padding: 2.5rem 2rem;
+    box-shadow:
+      0 8px 20px rgba(0, 0, 0, 0.06),
+      0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  
+  .achievement-card:nth-child(even) {
+    animation-delay: 0.3s;
+  }
+  .achievement-card:nth-child(odd) {
+    animation-delay: 0.15s;
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .achievement-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+      0 12px 28px rgba(0, 0, 0, 0.1),
+      0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .achievement-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .achievement-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 3px solid var(--yellow);
+    background-color: #fff;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .achievement-card h2 {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--black);
+  }
+  
+  .achievement-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.8rem;
+    border-radius: 8px;
+  }
+  
+  .achievement-gallery img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.4s ease;
+  }
+  
+  .achievement-gallery img:hover {
+    transform: scale(1.08) rotate(1deg);
+  }
+  
+  .achievement-card p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #333;
+  }

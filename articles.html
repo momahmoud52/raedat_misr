@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مقالات | رائدات مصر</title>
+  <style>
+    :root {
+      --black: #111;
+      --white: #fff;
+      --red: #b91c1c;
+      --yellow: #facc15;
+      --gray: #e5e7eb;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9fafb;
+      color: var(--black);
+      scroll-behavior: smooth;
+    }
+
+    header {
+      background: var(--black);
+      color: var(--white);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+    }
+
+    .add-btn {
+      background-color: var(--red);
+      color: white;
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .article-card {
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .article-card img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+    }
+
+    .article-card .content {
+      padding: 1rem;
+    }
+
+    .article-card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      font-family: 'Noto Kufi Arabic', sans-serif;
+      color: #1f2937;
+    }
+
+    .article-card p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #374151;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; right: 0; left: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+
+    .modal-content input,
+    .modal-content textarea {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid var(--gray);
+      border-radius: 6px;
+    }
+
+    .modal-content input[type="file"] {
+      padding: 0.4rem;
+    }
+
+    .modal-content button {
+      background: var(--yellow);
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      float: left;
+      background: var(--red);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      font-weight: bold;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .read-more-btn,
+    .delete-btn {
+      background: var(--yellow);
+      border: none;
+      padding: 0.4rem 0.8rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+
+    .delete-btn {
+      background: var(--red);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>المقالات</h1>
+    <button class="add-btn" onclick="showPasswordModal()">➕ أضف مقال</button>
+  </header>
+
+  <div class="container" id="articlesContainer"></div>
+
+  <div class="modal" id="passwordModal">
+    <div class="modal-content">
+      <h3>أدخل كلمة المرور</h3>
+      <input type="password" id="adminPass" placeholder="كلمة السر" />
+      <button onclick="verifyPassword()">تأكيد</button>
+    </div>
+  </div>
+
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeAddModal()">×</button>
+      <h3>إضافة مقال جديد</h3>
+      <input type="text" id="articleTitle" placeholder="عنوان المقال" />
+      <textarea id="articleBody" rows="4" placeholder="نص المقال"></textarea>
+      <input type="file" id="articleImage" accept="image/*" />
+      <button onclick="addArticle()">نشر المقال</button>
+    </div>
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = "Raedat2025";
+    let isAdmin = false;
+
+    const passwordModal = document.getElementById("passwordModal");
+    const addModal = document.getElementById("addModal");
+    const articlesContainer = document.getElementById("articlesContainer");
+    let db;
+
+    window.onload = () => openDB();
+
+    function showPasswordModal() {
+      passwordModal.classList.add("active");
+    }
+
+    function verifyPassword() {
+      const entered = document.getElementById("adminPass").value;
+      if (entered === CORRECT_PASSWORD) {
+        passwordModal.classList.remove("active");
+        addModal.classList.add("active");
+        isAdmin = true;
+        document.getElementById("adminPass").value = "";
+        refreshArticles(); // reload to show delete buttons
+      } else {
+        alert("كلمة مرور غير صحيحة");
+      }
+    }
+
+    function closeAddModal() {
+      addModal.classList.remove("active");
+    }
+
+    function openDB() {
+      const request = indexedDB.open("RaedatDB", 1);
+      request.onerror = () => alert("فشل فتح قاعدة البيانات");
+      request.onsuccess = () => {
+        db = request.result;
+        loadArticles();
+      };
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains("articles")) {
+          db.createObjectStore("articles", { keyPath: "id", autoIncrement: true });
+        }
+      };
+    }
+
+    function addArticle() {
+      const title = document.getElementById("articleTitle").value.trim();
+      const body = document.getElementById("articleBody").value.trim();
+      const imageFile = document.getElementById("articleImage").files[0];
+
+      if (!title || !body || !imageFile) {
+        alert("يرجى ملء جميع الحقول");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const newArticle = { title, body, image: e.target.result };
+        const tx = db.transaction("articles", "readwrite");
+        const store = tx.objectStore("articles");
+        const request = store.add(newArticle);
+
+        request.onsuccess = (e) => {
+          newArticle.id = e.target.result;
+          renderArticle(newArticle);
+          closeAddModal();
+          document.getElementById("articleTitle").value = "";
+          document.getElementById("articleBody").value = "";
+          document.getElementById("articleImage").value = "";
+        };
+
+        request.onerror = () => alert("فشل إضافة المقال");
+      };
+      reader.readAsDataURL(imageFile);
+    }
+
+    function loadArticles() {
+      const tx = db.transaction("articles", "readonly");
+      const store = tx.objectStore("articles");
+      articlesContainer.innerHTML = "";
+      store.openCursor().onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          renderArticle(cursor.value);
+          cursor.continue();
+        }
+      };
+    }
+
+    function refreshArticles() {
+      loadArticles(); // إعادة تحميل المقالات لتحديث حالة isAdmin
+    }
+
+    function renderArticle(article) {
+      const card = document.createElement("article");
+      card.className = "article-card";
+
+      const shortBody = article.body.split("\n").slice(0, 2).join("<br>") + "...";
+      const fullBody = article.body.replace(/\n/g, "<br>");
+
+      card.innerHTML = `
+        <img src="${article.image}" alt="صورة المقال" />
+        <div class="content">
+          <h3>${article.title}</h3>
+          <p class="preview">${shortBody}</p>
+          <p class="full" style="display: none">${fullBody}</p>
+          <button class="read-more-btn" onclick="toggleReadMore(this)">قراءة المزيد</button>
+          ${isAdmin ? `<button class="delete-btn" onclick="deleteArticle(this, ${article.id})">🗑️ حذف</button>` : ""}
+        </div>
+      `;
+
+      articlesContainer.prepend(card);
+    }
+
+    function toggleReadMore(button) {
+      const preview = button.previousElementSibling.previousElementSibling;
+      const full = button.previousElementSibling;
+      if (full.style.display === "none") {
+        preview.style.display = "none";
+        full.style.display = "block";
+        button.textContent = "إخفاء";
+      } else {
+        preview.style.display = "block";
+        full.style.display = "none";
+        button.textContent = "قراءة المزيد";
+      }
+    }
+
+    function deleteArticle(button, id) {
+      if (confirm("هل أنت متأكد من حذف المقال؟")) {
+        const tx = db.transaction("articles", "readwrite");
+        const store = tx.objectStore("articles");
+        store.delete(id);
+        tx.onsuccess = () => {
+          button.closest(".article-card").remove();
+        };
+      }
+    }
+  </script>
+
+</body>
+</html>
